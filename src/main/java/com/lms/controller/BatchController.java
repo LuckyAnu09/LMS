@@ -1,6 +1,7 @@
 package com.lms.controller;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -19,7 +20,8 @@ import com.lms.dto.BatchRequest;
 import com.lms.entity.Batch;
 import com.lms.exception.BatchNotFoundException;
 import com.lms.exception.ProgramNotFoundException;
-import com.lms.pojo.BatchProgramID;
+import com.lms.dto.BatchProgram;
+
 import com.lms.service.BatchService;
 
 @RestController
@@ -62,6 +64,14 @@ public class BatchController {
 	{
 		return batchService.deleteBatch(batchID);
 	}
+	
+	@GetMapping("batchProgram/{batch_program_id}")
+	public List<BatchProgram> getBatchByProgram(@PathVariable(value="batch_program_id") Long batch_program_id) throws ProgramNotFoundException
+	{
+		return batchService.getBatchProgram(batch_program_id);
+	}
+	
+	
 	
 	
 	

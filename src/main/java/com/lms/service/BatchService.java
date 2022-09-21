@@ -1,7 +1,10 @@
 package com.lms.service;
 
 import java.util.List;
+
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -9,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.lms.dto.BatchProgram;
 import com.lms.dto.BatchRequest;
 import com.lms.entity.Batch;
 import com.lms.entity.Program;
 import com.lms.exception.BatchNotFoundException;
 import com.lms.exception.ProgramNotFoundException;
-import com.lms.pojo.BatchProgramID;
+
+
 import com.lms.repository.BatchRepository;
 import com.lms.repository.ProgramRepository;
 
@@ -111,6 +116,44 @@ public class BatchService {
 		
 		
 	}
+	
+	
+	
+	public List<BatchProgram> getBatchProgram(Long batch_program_id) throws ProgramNotFoundException {
+		
+		Program program = pr.findByProgramID(batch_program_id);
+		
+		if(program!=null)
+		{
+			
+			//return br.findBatchProgram(batch_program_id);
+			return 
+					br.findByBatchProgramId(batch_program_id).stream()
+					.map(this::convertEntityToBatchPRogram)
+					.collect(Collectors.toList());
+					
+		}
+		else
+		{
+			throw new ProgramNotFoundException("Program with given Batch_program_id not found: "+batch_program_id);
+		}
+	
+	}
+	
+	private BatchProgram convertEntityToBatchPRogram(Batch batch)
+	{
+		BatchProgram batchProgram = new BatchProgram();
+		
+		batchProgram.setBatch_id(batch.getBatchId());
+		batchProgram.setBatchDescription(batch.getBatchDescription());
+		batchProgram.setBatchName(batch.getBatchName());
+		batchProgram.setBatchStatus(batch.getBatchStatus());
+		batchProgram.setProgram_name(batch.getProgram().getProgramName());
+		
+		return batchProgram;
+	}
+	
+	
 	
 	
 /*	public Batch saveBatch(BatchProgramID batchProgram) {
